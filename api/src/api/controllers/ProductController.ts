@@ -19,7 +19,7 @@ import { LoggedUserInterface } from '@api/Interfaces/LoggedUserInterface';
 import { ProductCreateRequest } from '@api/Interfaces/ProductCreateRequest';
 import { ProductUpdateRequest } from '@api/Interfaces/ProductUpdateRequest';
 import { UserRole } from '@api/models/User';
-import { BuyerControlLevel } from '@api/middlewares/BuyerControlLevel';
+import { SellerControlLevel } from '@api/middlewares/SellerControlLevel';
 
 @Service()
 @OpenAPI({
@@ -42,27 +42,27 @@ export class ProductController {
     return await this.productService.findOneById(id);
   }
 
-  @UseBefore(BuyerControlLevel)
+  @UseBefore(SellerControlLevel)
   @Get('/my')
   public async getAllMyProducts(@LoggedUser() loggedUser: LoggedUserInterface) {
     return await this.productService.getAllMyProducts(loggedUser.userId);
   }
 
-  @UseBefore(BuyerControlLevel)
+  @UseBefore(SellerControlLevel)
   @Post()
   @HttpCode(201)
   public async create(@Body() product: ProductCreateRequest, @LoggedUser() loggedUser: LoggedUserInterface) {
     return await this.productService.create(product, loggedUser);
   }
 
-  @UseBefore(BuyerControlLevel)
+  @UseBefore(SellerControlLevel)
   @Put('/:id')
   public async update(@Param('id') id: number, @Body() product: ProductUpdateRequest, @LoggedUser() loggedUser: LoggedUserInterface) {
     await this.checkProductOwner(id, loggedUser);
     return await this.productService.updateOneById(id, product);
   }
 
-  @UseBefore(BuyerControlLevel)
+  @UseBefore(SellerControlLevel)
   @Delete('/:id')
   @HttpCode(204)
   public async delete(@Param('id') id: number, @LoggedUser() loggedUser: LoggedUserInterface) {
@@ -73,7 +73,7 @@ export class ProductController {
 
   private async checkProductOwner(id: number, loggedUser: LoggedUserInterface) {
     const product = await this.productService.findOneById(id);
-    if (loggedUser.role != UserRole.BUYER || product.ownerId != loggedUser.userId) {
+    if (loggedUser.role != UserRole.SELLER || product.ownerId != loggedUser.userId) {
       throw new HttpError(403, 'Forbidden');
     }
   }

@@ -1,4 +1,4 @@
-import { Middleware, ExpressErrorMiddlewareInterface, HttpError } from 'routing-controllers';
+import { ExpressErrorMiddlewareInterface, HttpError, Middleware } from 'routing-controllers';
 import { Service } from 'typedi';
 
 @Middleware({ type: 'after' })

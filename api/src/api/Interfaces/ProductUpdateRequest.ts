@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsPositive, IsString, MaxLength, Min, MinLength } from 'class-validator';
+import { IsDivisibleBy, IsNumber, IsOptional, IsPositive, IsString, MaxLength, Min, MinLength } from 'class-validator';
 
 export class ProductUpdateRequest {
   @MaxLength(191)
@@ -11,11 +11,12 @@ export class ProductUpdateRequest {
   @IsPositive()
   @IsOptional()
   @Min(1)
-  cost: string;
+  @IsDivisibleBy(5)
+  cost: number;
 
   @IsNumber()
   @IsPositive()
   @IsOptional()
   @Min(1)
-  amountAvailable: string;
+  amountAvailable: number;
 }
