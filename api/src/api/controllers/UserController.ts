@@ -8,6 +8,7 @@ import { UserCreateRequest } from '@api/Interfaces/UserCreateRequest';
 import { UserUpdateRequest } from '@api/Interfaces/UserUpdateRequest';
 import { AuthUserControlLevel } from '@api/middlewares/AuthUserControlLevel';
 import { LoggedUserInterface } from '@api/Interfaces/LoggedUserInterface';
+import { AllowAnonUsersControlLevel } from '@api/middlewares/AllowAnonUsersControlLevel';
 
 @Service()
 @OpenAPI({
@@ -36,6 +37,7 @@ export class UserController {
     return await this.userService.findOneById(loggedUser.userId);
   }
 
+  @UseBefore(AllowAnonUsersControlLevel)
   @Post()
   @HttpCode(201)
   public async create(@Body() user: UserCreateRequest, @LoggedUser() loggedUser: LoggedUserInterface) {
@@ -52,7 +54,8 @@ export class UserController {
   @Delete('/:id')
   @HttpCode(204)
   public async delete(@Param('id') id: number) {
-    return await this.userService.deleteOneById(id);
+    await this.userService.deleteOneById(id);
+    return {};
   }
 }
 

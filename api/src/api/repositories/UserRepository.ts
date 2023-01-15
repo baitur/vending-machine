@@ -1,4 +1,4 @@
-import { EntityRepository, IsNull } from 'typeorm';
+import { EntityRepository, IsNull, UpdateResult } from 'typeorm';
 import { User } from '@api/models/User';
 import { MainRepository } from 'typeorm-simple-query-parser/lib';
 
@@ -12,8 +12,8 @@ export class UserRepository extends MainRepository<User> {
     return this.save(user);
   }
 
-  async updateUser(id: number, user: User): Promise<void> {
-    await this.update(id, user);
+  async updateUser(id: number, user: User): Promise<UpdateResult> {
+    return await this.update(id, user);
   }
 
   async softDeleteUser(id: number): Promise<void> {

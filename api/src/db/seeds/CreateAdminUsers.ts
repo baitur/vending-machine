@@ -20,7 +20,7 @@ export default class CreateAdminUsers implements Seeder {
       const models = await repository
         .create(userData);
 
-      await repository.save(models)
+      await repository.save(models);
     }
   }
 }

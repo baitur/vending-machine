@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { AuthService } from '@api/services/AuthService';
 import { HashService } from '@api/services/HashService';
-import { UnauthorizedError } from 'routing-controllers';
+import { HttpError } from 'routing-controllers';
 import { LoginRequest } from '@api/Interfaces/LoginRequest';
 import { UserRepository } from '@api/repositories/UserRepository';
 
@@ -20,12 +20,8 @@ export class LoginService {
       where: { email: data.email },
     });
 
-    if (!user) {
-      throw new UnauthorizedError();
-    }
-
-    if (!(await this.hashService.compare(data.password, user.password))) {
-      throw new UnauthorizedError();
+    if (!user || !(await this.hashService.compare(data.password, user.password))) {
+      throw new HttpError(401, 'Unauthorized');
     }
 
     return this.authService.sign(
