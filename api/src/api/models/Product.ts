@@ -16,11 +16,11 @@ export class Product extends BaseEntity {
   @Column()
   amountAvailable: number;
 
-  @Column({ name: 'owner_id' })
+  @Column({ name: 'owner_id', type: 'bigint' })
   ownerId: number;
 
   @OneToOne(() => User)
-  @JoinColumn({ name: 'ownerId' })
+  @JoinColumn({ name: 'owner_id' })
   owner: User;
 
   @Column({ name: 'created_at', type: 'timestamp' })

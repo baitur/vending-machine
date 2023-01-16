@@ -11,6 +11,7 @@ import { BuyRequest } from '@api/Interfaces/BuyRequest';
 @Service()
 @OpenAPI({
   tags: ['Vending'],
+  security: [{ bearerAuth: [] }],
 })
 @JsonController()
 export class VendingController {
