@@ -46,8 +46,8 @@ export class UserController {
 
   @UseBefore(AdminControlLevel)
   @Put('/:id')
-  public async update(@Param('id') id: number, @Body() user: UserUpdateRequest) {
-    return await this.userService.updateOneById(id, user);
+  public async update(@Param('id') id: number, @Body() user: UserUpdateRequest, @LoggedUser() loggedUser: LoggedUserInterface) {
+    return await this.userService.updateOneById(id, user, loggedUser);
   }
 
   @UseBefore(AdminControlLevel)

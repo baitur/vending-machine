@@ -1,4 +1,5 @@
-import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserRole } from '@api/models/User';
 
 export class UserUpdateRequest {
   @MaxLength(191)
@@ -25,4 +26,8 @@ export class UserUpdateRequest {
   @IsString()
   @IsOptional()
   password: string;
+
+  @IsOptional()
+  @IsEnum(UserRole)
+  role: UserRole;
 }

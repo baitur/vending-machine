@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserRole } from '@api/models/User';
 
 export class UserCreateRequest {
   @MaxLength(191)
@@ -31,4 +32,8 @@ export class UserCreateRequest {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @IsOptional()
+  @IsEnum(UserRole)
+  role: UserRole;
 }

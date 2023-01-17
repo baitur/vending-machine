@@ -30,10 +30,13 @@ export class UserService {
     return await this.userRepository.createUser(userData);
   }
 
-  public async updateOneById(id: number, data: UserUpdateRequest) {
+  public async updateOneById(id: number, data: UserUpdateRequest, loggedUser?: LoggedUserInterface) {
     const user = await this.getRequestedUserOrFail(id);
     const userData: User = Object.assign(user, data);
     await this.userRepository.updateUser(id, userData);
+    if (!loggedUser || (loggedUser && loggedUser.role != UserRole.ADMIN)) {
+      userData.role = UserRole.BUYER;
+    }
 
     return userData;
   }
