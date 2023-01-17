@@ -21,6 +21,8 @@ export class AllowAnonUsersControlLevel implements ExpressMiddlewareInterface {
         request.loggedUser = user;
         next();
       });
+    } else {
+      next();
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Service } from 'typedi';
 import { JWTProvider } from './Providers/JWTProvider';
 import { LoggedUserInterface } from '@api/Interfaces/LoggedUserInterface';
+import { UserRole } from '@api/models/User';
 
 @Service()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     this.provider = new JWTProvider();
   }
 
-  public sign(payload: LoggedUserInterface, dataReturn: object): object {
+  public sign(payload: { role: UserRole; deposit: number; userId: number; email: string; username: string }, dataReturn: object): object {
     return this.provider.sign(payload, dataReturn);
   }
 }

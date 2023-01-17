@@ -15,6 +15,7 @@ import EventBus from './common/EventBus';
 import Products from './components/products.component';
 import ProductComponent from './components/product.component';
 import EditProductComponent from './components/edit-product.component';
+import VendingComponent from './components/vending.component';
 
 type Props = {};
 
@@ -125,6 +126,7 @@ class App extends Component<Props, State> {
             <Route path="/product/:id" element={<ProductComponent/>}/>
             <Route path="/edit/:id" element={<EditProductComponent/>}/>
             <Route path="/create" element={<EditProductComponent/>}/>
+            <Route path="/vending" element={<VendingComponent/>}/>
           </Routes>
         </div>
       </div>
