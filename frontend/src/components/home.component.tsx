@@ -45,7 +45,7 @@ export default class Home extends Component<Props, State> {
               )}
 
               {role == 'seller' && (
-                <Link to={'/product'} type="button" className="btn btn-primary btn-lg px-4 gap-3">
+                <Link to={'/products'} type="button" className="btn btn-primary btn-lg px-4 gap-3">
                   My Products
                 </Link>
               )}

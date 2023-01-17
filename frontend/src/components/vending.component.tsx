@@ -163,7 +163,6 @@ class VendingComponent extends Component<Props, State> {
       await this.load();
       this.renderBalance('Product purchased.', change);
     } catch (e) {
-      console.log(e);
       alert(e.response.data.message || e.message);
     }
   }
@@ -171,7 +170,7 @@ class VendingComponent extends Component<Props, State> {
   private renderBalance(message: string, balance: number[]) {
     const coins = coinsArr.map((coin, index) => `${coin}c: ${balance[index]}`).join('\n');
 
-    alert(`${message}\n${coins}`);
+    alert(`${message}\n\nYou've got coins back:\n${coins}`);
   }
 }
 

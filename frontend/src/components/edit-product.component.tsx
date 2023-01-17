@@ -62,8 +62,6 @@ class EditProductComponent extends Component<Props, State> {
         amountAvailable: product.amountAvailable,
         id,
       });
-    } else {
-      this.setState({ redirect: '/home' });
     }
 
   }
@@ -126,17 +124,26 @@ class EditProductComponent extends Component<Props, State> {
 
   private async save() {
     this.setState({ loading: true });
-    const { id, productName, amountAvailable, cost } = this.state;
-    let productId = id;
-    if (productId > 0) {
-      await ProductService.update(productId, { productName, amountAvailable, cost });
-    } else {
-      const newProduct = await ProductService.create({ productName, amountAvailable, cost });
-      productId = newProduct.id;
-      this.setState({ id: productId });
+    try {
+      const { id, productName, amountAvailable, cost } = this.state;
+      let productId = id;
+      if (productId > 0) {
+        await ProductService.update(productId, { productName, amountAvailable, cost });
+      } else {
+        const newProduct = await ProductService.create({ productName, amountAvailable, cost });
+        productId = newProduct.id;
+        this.setState({ id: productId });
+      }
+      this.setState({ redirect: '/products' });
+    } catch (e) {
+      if (e.response.data.errors) {
+        alert((e.response.data.message || e.message) + '\n\n' + e.response.data.errors.map(i => Object.values(i.constraints).join('\n')).join('\n'));
+      } else alert(e.response.data.message || e.message);
+    } finally {
+      this.setState({ loading: false });
     }
 
-    this.setState({ loading: false });
+
   }
 }
 
