@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  mysql:
+    image: "mysql:8.0"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${TYPEORM_PASSWORD}"
+      MYSQL_DATABASE: "${TYPEORM_DATABASE}"
+      MYSQL_USER: "${TYPEORM_USERNAME}"
+      MYSQL_PASSWORD: "${TYPEORM_PASSWORD}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    env_file: ./api/.env
+    ports:
+      - "${FORWARD_DB_PORT:-3306}:3306"
+    volumes:
+      - "backendmysql:/var/lib/mysql"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+
+  server:
+    build:
+      context: ./api
+      target: development-build-stage
+    env_file: ./api/.env
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - ./api/:/app
+      #- /app/node_modules
+    restart: "unless-stopped"
+    networks:
+      - backend
+    depends_on:
+        - mysql
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  backendmysql:
+    driver: local

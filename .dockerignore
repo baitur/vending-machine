@@ -1,0 +1,12 @@
+.vscode
+/api/node_modules
+/frontent/node_modules
+.eslintrc
+.eslintignore
+.editorconfig
+.huskyrc
+.lintstagedrc.json
+.prettierrc
+jest.config.js
+Dockerfile
+docker-compose.yml
