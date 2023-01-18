@@ -40,7 +40,8 @@ export class VendingService {
 
     const user = await this.userRepository.getOneById(loggedUser.userId);
     const balance = user.deposit;
-    if (balance < product.cost * data.amount) {
+    const total = product.cost * data.amount;
+    if (balance < total) {
       throw new HttpError(500, 'User has not enough balance');
     }
 
@@ -58,7 +59,13 @@ export class VendingService {
     product.amountAvailable -= data.amount;
     await this.productRepository.updateProduct(data.productId, product);
 
-    return this.convertToCoins(change);
+    return {
+      productName: product.productName,
+      productId: product.id,
+      totalSpent: total,
+      amountPurchased: data.amount,
+      change: this.convertToCoins(change)
+    };
   }
 
   private convertToCoins(balance: number): number[] {

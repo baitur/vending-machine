@@ -159,18 +159,33 @@ class VendingComponent extends Component<Props, State> {
   private async buy() {
     try {
       const { productId, amount } = this.state;
-      const { change } = await VendingService.buy(productId, amount);
+      const info = await VendingService.buy(productId, amount);
       await this.load();
-      this.renderBalance('Product purchased.', change);
+      const message = `Product "${info.productName}" purchased.\nTotal spent: ${info.totalSpent}c.\nAmount: ${info.amountPurchased}.`;
+      this.renderBalance(message, info.change);
     } catch (e) {
       alert(e.response.data.message || e.message);
     }
   }
 
+  /**
+   * Renders the message and remaining balance in human readable way.
+   * @param message
+   * @param balance
+   * @private
+   */
   private renderBalance(message: string, balance: number[]) {
-    const coins = coinsArr.map((coin, index) => `${coin}c: ${balance[index]}`).join('\n');
-
-    alert(`${message}\n\nYou've got coins back:\n${coins}`);
+    let text = `${message}\n\n`;
+    if (balance.every(b => b == 0)) {
+      text += `You've got no change back.`;
+    } else {
+      const coins = coinsArr.map((coin, index) =>
+        balance[index] > 0 ? `${balance[index]} x ${coin}c coins` : '')
+        .filter(c => c.length > 0)
+        .join(', ');
+      text += `You've got change back:\n${coins}.`;
+    }
+    alert(text);
   }
 }
 

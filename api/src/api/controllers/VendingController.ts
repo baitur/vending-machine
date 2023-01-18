@@ -35,7 +35,6 @@ export class VendingController {
   @UseBefore(BuyerControlLevel)
   @Post('/buy')
   public async buy(@Body() buyRequest: BuyRequest, @LoggedUser() loggedUser: LoggedUserInterface) {
-    const change = await this.vendingService.buy(buyRequest, loggedUser);
-    return { change };
+    return await this.vendingService.buy(buyRequest, loggedUser);
   }
 }
