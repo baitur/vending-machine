@@ -311,7 +311,7 @@ describe('Products', function() {
       .post('/products')
       .send({
         'productName': 'Product C',
-        'cost': 70,
+        'cost': 80,
         'amountAvailable': 2,
       })
       .set('Content-Type', 'application/json')
@@ -435,6 +435,132 @@ describe('Vending', function() {
       .expect(200)
       .end((e, r) => {
         assert.equal(r.body.balance.join(','), '0,0,1,0,1');
+        done();
+      });
+  });
+
+  it('deposit more 100c', (done) => {
+    request(BASE_URL)
+      .post('/deposit')
+      .send({
+        'coin': 100,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(200)
+      .end((e, r) => {
+        assert.equal(r.body.balance, 100);
+        done();
+      });
+  });
+
+  it('deposit 50c', (done) => {
+    request(BASE_URL)
+      .post('/deposit')
+      .send({
+        'coin': 50,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(200)
+      .end((e, r) => {
+        assert.equal(r.body.balance, 150);
+        done();
+      });
+  });
+
+  it('buy without auth', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': productB_Id,
+        'amount': 1,
+      })
+      .set('Content-Type', 'application/json')
+      .expect(403, done);
+  });
+
+  it('buy non existed product', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': 9932139131231231,
+        'amount': 1,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(404)
+      .end((e, r) => {
+        assert.equal(r.body.message, 'Not Found');
+        done();
+      });
+  });
+
+  it('buy non negative amount of product', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': productB_Id,
+        'amount': -1,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(500)
+      .end((e, r) => {
+        assert.equal(r.body.errors.length, 1);
+        assert.equal(r.body.errors[0].property, 'amount');
+        done();
+      });
+  });
+
+  it('buy too big amount of product', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': productB_Id,
+        'amount': 14,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(500)
+      .end((e, r) => {
+        assert.equal(r.body.message, 'There are not enough amount of product');
+        done();
+      });
+  });
+
+  it('check expensive product', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': productC_Id,
+        'amount': 2,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(500)
+      .end((e, r) => {
+        assert.equal(r.body.message, 'User has not enough balance');
+        done();
+      });
+  });
+
+  it('successful purchase', (done) => {
+    request(BASE_URL)
+      .post('/buy')
+      .send({
+        'productId': productB_Id,
+        'amount': 8,
+      })
+      .set('Content-Type', 'application/json')
+      .set('Authorization', `Bearer ${buyerToken}`)
+      .expect(200)
+      .end((e, r) => {
+        assert.equal(r.body.productName, 'Product B');
+        assert.equal(r.body.productId, productB_Id);
+        assert.equal(r.body.totalSpent, 80);
+        assert.equal(r.body.amountPurchased, 8);
+        assert.equal(r.body.change.join(','), '0,0,1,1,0');
         done();
       });
   });
